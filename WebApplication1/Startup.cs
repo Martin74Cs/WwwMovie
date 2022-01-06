@@ -8,8 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Filmy.Models;
+using Microsoft.EntityFrameworkCore;
+using Filmy.Data.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Filmy.Data.Cart;
 
-namespace WebApplication1
+namespace Filmy
 {
     public class Startup
     {
@@ -24,6 +31,48 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            //services.AddDbContext<AppDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("FilmKnihovna:DefaultSqlSever")));
+            services.AddDbContext<AppDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("FilmKnihovna:PraceSqlSever")));
+
+            //sevices konfigurace
+            services.AddScoped<IActorServices, ActorServices>();
+            services.AddScoped<IProducerSevices, ProducerService>();
+            services.AddScoped<ICinemaSevices, CinemaSevices>();
+            services.AddScoped<IMovieServices, MovieSevices>();
+            services.AddScoped<IOrdersService, OrdersService>();
+
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+
+            //Authentication and authorization
+            services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+            {
+                option.Password.RequiredLength = 2;
+                option.Password.RequiredUniqueChars = 0;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = false;
+                option.Password.RequireDigit = false;
+                
+            }).AddEntityFrameworkStores<AppDbContext>();
+
+            //nebo
+            //services.Configure<IdentityOptions>(option =>
+            //{
+            //    option.Password.RequiredLength = 2;
+            //    option.Password.RequiredUniqueChars = 0;
+            //    option.Password.RequireNonAlphanumeric = false;
+            //});
+
+            services.AddMemoryCache();
+            services.AddSession();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });
+
+            services.AddControllersWithViews();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,15 +92,25 @@ namespace WebApplication1
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
+
+            //Authentication & Authorization
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                name: "default",
+                pattern: "{controller=Movies}/{action=Index}/{id?}");
             });
+
+            //Seed database
+            //AppDbInitializer.Seed(app);
+            //AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
         }
     }
+  
 }

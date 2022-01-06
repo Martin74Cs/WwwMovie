@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{4AF5BD3E-7828-4477-AD48-00CA30153867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmyWeb", "WebApplication1\FilmyWeb.csproj", "{4AF5BD3E-7828-4477-AD48-00CA30153867}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmForm", "WinFormsApp1\FilmForm.csproj", "{41FBAF44-0A5D-4FB1-B68B-194D27F5BE57}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4AF5BD3E-7828-4477-AD48-00CA30153867} = {4AF5BD3E-7828-4477-AD48-00CA30153867}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{4AF5BD3E-7828-4477-AD48-00CA30153867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AF5BD3E-7828-4477-AD48-00CA30153867}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AF5BD3E-7828-4477-AD48-00CA30153867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41FBAF44-0A5D-4FB1-B68B-194D27F5BE57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41FBAF44-0A5D-4FB1-B68B-194D27F5BE57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41FBAF44-0A5D-4FB1-B68B-194D27F5BE57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41FBAF44-0A5D-4FB1-B68B-194D27F5BE57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
