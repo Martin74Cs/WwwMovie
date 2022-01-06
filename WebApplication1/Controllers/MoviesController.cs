@@ -14,29 +14,29 @@ namespace Filmy.Controllers
     [Authorize(Roles = UserRoles.Admin)]
     public class MoviesController : Controller
     {
-        private readonly IMovieServices _service;
+        private readonly IMovieServices service;
 
-        public MoviesController(IMovieServices service)
+        public MoviesController(IMovieServices _service)
         {
-            _service = service;
+            service = _service;
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             //var AllMovies = _sevice.Movie.Include(n => n.Cinema).OrderBy(n => n.Name).ToList();
-            var AllMovies = await _service.GetAllAsync(n => n.Cinema);
+            var AllMovies = await service.GetAllAsync(n => n.Cinema);
             return View(AllMovies);
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> Filter(string searchString)
         {
-            var allMovies = await _service.GetAllAsync(n => n.Cinema);
+            var allMovies = await service.GetAllAsync(n => n.Cinema);
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                var filteredResultNew = await _service.SearchMovieAsync(searchString);
+                var filteredResultNew = await service.SearchMovieAsync(searchString);
                 return View("Index", filteredResultNew);
             }
 
@@ -46,14 +46,14 @@ namespace Filmy.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var movieDetail = await _service.GetMovieByIdAsync(id);
+            var movieDetail = await service.GetMovieByIdAsync(id);
             return View(movieDetail);
         }
 
         //GET: Movies/Create
         public async Task<IActionResult> Create()
         {
-            var movieDropdownsData = await _service.GetNewMovieDropdownsValues();
+            var movieDropdownsData = await service.GetNewMovieDropdownsValues();
 
             ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
             ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
@@ -67,7 +67,7 @@ namespace Filmy.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewMovieDropdownsValues();
+                var movieDropdownsData = await service.GetNewMovieDropdownsValues();
 
                 ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
                 ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
@@ -76,7 +76,7 @@ namespace Filmy.Controllers
                 return View(movie);
             }
 
-            await _service.AddNewMovieAsync(movie);
+            await service.AddNewMovieAsync(movie);
             return RedirectToAction(nameof(Index));
         }
 
@@ -84,7 +84,7 @@ namespace Filmy.Controllers
         //GET: Movies/Edit/1
         public async Task<IActionResult> Edit(int id)
         {
-            var movieDetails = await _service.GetMovieByIdAsync(id);
+            var movieDetails = await service.GetMovieByIdAsync(id);
             if (movieDetails == null) return View("NotFound");
 
             var response = new NewMovieVM()
@@ -102,7 +102,7 @@ namespace Filmy.Controllers
                 ActorIds = movieDetails.Actor_Movie.Select(n => n.ActorId).ToList(),
             };
 
-            var movieDropdownsData = await _service.GetNewMovieDropdownsValues();
+            var movieDropdownsData = await service.GetNewMovieDropdownsValues();
             ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
             ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
             ViewBag.Actors = new SelectList(movieDropdownsData.Actors, "Id", "FullName");
@@ -117,7 +117,7 @@ namespace Filmy.Controllers
 
             if (!ModelState.IsValid)
             {
-                var movieDropdownsData = await _service.GetNewMovieDropdownsValues();
+                var movieDropdownsData = await service.GetNewMovieDropdownsValues();
 
                 ViewBag.Cinemas = new SelectList(movieDropdownsData.Cinemas, "Id", "Name");
                 ViewBag.Producers = new SelectList(movieDropdownsData.Producers, "Id", "FullName");
@@ -126,7 +126,7 @@ namespace Filmy.Controllers
                 return View(movie);
             }
 
-            await _service.UpdateMovieAsync(movie);
+            await service.UpdateMovieAsync(movie);
             return RedirectToAction(nameof(Index));
         }
     }
